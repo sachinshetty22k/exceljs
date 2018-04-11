@@ -1,13 +1,41 @@
-'use strict';
+"use strict";
+let fs = require("fs");
 
 module.exports = function(grunt) {
-  grunt.loadNpmTasks('grunt-babel');
-  grunt.loadNpmTasks('grunt-browserify');
-  grunt.loadNpmTasks('grunt-contrib-uglify');
-  grunt.loadNpmTasks('grunt-contrib-jasmine');
-  grunt.loadNpmTasks('grunt-contrib-copy');
+  grunt.loadNpmTasks("grunt-babel");
+  grunt.loadNpmTasks("grunt-browserify");
+  grunt.loadNpmTasks("grunt-contrib-uglify");
+  grunt.loadNpmTasks("grunt-contrib-jasmine");
+  grunt.loadNpmTasks("grunt-contrib-copy");
+  grunt.registerTask("evalRemove", "Eval Remove task.", function(grunt) {
+    let src = this.options().src;
+    let dist = this.options().dist;
+    let done = this.async();
+    if (!dist) {
+      dist = src;
+    }
+    fs.readFile(src, "utf8", (err, data) => {
+      if (err) throw err;
+
+      fs.writeFile(
+        dist,
+        data.replace("new Function();", "function () {};"),
+        err => {
+          if (err) throw err;
+          console.log(">>> removing eval is done.");
+          done();
+        }
+      );
+    });
+  });
 
   grunt.initConfig({
+    evalRemove: {
+      options: {
+        src: "./dist/exceljs.js",
+        dist: "./dist/exceljs.js"
+      }
+    },
     babel: {
       options: {
         sourceMap: true
@@ -16,26 +44,26 @@ module.exports = function(grunt) {
         files: [
           {
             expand: true,
-            src: ['./lib/**/*.js', './spec/browser/*.js'],
-            dest: './build/'
+            src: ["./lib/**/*.js", "./spec/browser/*.js"],
+            dest: "./build/"
           }
         ]
       }
     },
     browserify: {
       bundle: {
-        src: ['./build/lib/exceljs.browser.js'],
-        dest: './dist/exceljs.js',
+        src: ["./build/lib/exceljs.browser.js"],
+        dest: "./dist/exceljs.js",
         options: {
           browserifyOptions: {
-            standalone: 'ExcelJS'
+            standalone: "ExcelJS"
           }
         }
       },
       spec: {
-        src: ['./build/spec/browser/exceljs.spec.js'],
-        dest: './build/web/exceljs.spec.js'
-      },
+        src: ["./build/spec/browser/exceljs.spec.js"],
+        dest: "./build/web/exceljs.spec.js"
+      }
     },
     uglify: {
       options: {
@@ -43,9 +71,9 @@ module.exports = function(grunt) {
       },
       dist: {
         files: {
-          './dist/exceljs.min.js': ['./dist/exceljs.js']
+          "./dist/exceljs.min.js": ["./dist/exceljs.js"]
         }
-      },
+      }
       // es3: {
       //   files: [
       //     {
@@ -65,22 +93,36 @@ module.exports = function(grunt) {
     copy: {
       dist: {
         files: [
-          { expand: true, src: ['**'], cwd: './build/lib', dest: './dist/es5' },
-          { src: './build/lib/exceljs.nodejs.js', dest: './dist/es5/index.js'},
+          {
+            expand: true,
+            src: ["**"],
+            cwd: "./build/lib",
+            dest: "./dist/es5"
+          },
+          {
+            src: "./build/lib/exceljs.nodejs.js",
+            dest: "./dist/es5/index.js"
+          }
         ]
       }
     },
 
     jasmine: {
       dev: {
-        src: ['./dist/exceljs.js'],
+        src: ["./dist/exceljs.js"],
         options: {
-          specs: './build/web/exceljs.spec.js'
+          specs: "./build/web/exceljs.spec.js"
         }
       }
-    },
+    }
   });
-
-  grunt.registerTask('build', ['babel', 'browserify', 'uglify', 'copy']);
-  grunt.registerTask('ug', ['uglify']);
+  grunt.registerTask("build", [
+    "babel",
+    "browserify",
+    "evalRemove",
+    "uglify",
+    "copy"
+  ]);
+  // grunt.registerTask("build", ["evalremove"]);
+  grunt.registerTask("ug", ["uglify"]);
 };

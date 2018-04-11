@@ -1,13 +1,13 @@
 {
-  "name": "exceljs",
-  "version": "1.1.1",
+  "name": "exceljs-chrome-app",
+  "version": "1.1.10",
   "description": "Excel Workbook Manager - Read and Write xlsx and csv Files.",
   "private": false,
   "license": "MIT",
   "author": "Guyon Roche",
   "repository": {
     "type": "git",
-    "url": "https://github.com/guyonroche/exceljs.git"
+    "url": "https://github.com/sachinshetty22k/exceljs.git"
   },
   "engines": {
     "node": ">=4.0.0"
@@ -15,13 +15,18 @@
   "scripts": {
     "pretest": "npm run build",
     "test": "npm run test:full",
-    "test:full": "npm run test:nsp && npm run test:unit && npm run test:integration && npm run test:end-to-end && npm run test:browser",
+    "test:full":
+      "npm run test:nsp && npm run test:unit && npm run test:integration && npm run test:end-to-end && npm run test:browser",
     "test:nsp": "nsp check",
-    "test:unit": "mocha --require spec/config/setup spec/unit --require spec/config/setup-unit --recursive",
-    "test:integration": "mocha --require spec/config/setup spec/integration --recursive",
-    "test:end-to-end": "mocha --require spec/config/setup spec/end-to-end --recursive",
+    "test:unit":
+      "mocha --require spec/config/setup spec/unit --require spec/config/setup-unit --recursive",
+    "test:integration":
+      "mocha --require spec/config/setup spec/integration --recursive",
+    "test:end-to-end":
+      "mocha --require spec/config/setup spec/end-to-end --recursive",
     "test:browser": "./node_modules/.bin/grunt jasmine",
-    "test:native-integration": "export EXCEL_NATIVE=yes && mocha --require spec/config/setup spec/integration --recursive",
+    "test:native-integration":
+      "export EXCEL_NATIVE=yes && mocha --require spec/config/setup spec/integration --recursive",
     "test:manual": "node spec/manual/app.js",
     "clean-build": "npm run clean && npm run build",
     "lint": "eslint --ext .js lib spec",
@@ -98,10 +103,5 @@
     "underscore": "^1.8.3"
   },
   "main": "./dist/es5/index.js",
-  "files": [
-    "dist",
-    "LICENSE",
-    "README.md",
-    "index.d.ts"
-  ]
+  "files": ["dist", "LICENSE", "README.md", "index.d.ts"]
 }
